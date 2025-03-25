@@ -9,8 +9,7 @@ import asyncio
 import aiohttp
 from aiohttp import ClientTimeout
 import ssl
-from pathlib import Path
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple
 from dataclasses import dataclass
 import argparse
 import random
@@ -77,7 +76,6 @@ class CloudflareSpeedTest:
 
     def _expand_cidr(self, cidr: str) -> List[str]:
         """展开CIDR格式的IP段"""
-        import random
         try:
             network = ipaddress.ip_network(cidr, strict=False)
             prefix = network.prefixlen
@@ -118,7 +116,7 @@ class CloudflareSpeedTest:
             for _ in range(self.test_times):
                 try:
                     start_time = time.time()
-                    async with session.head(self.test_url, headers=headers, timeout=ClientTimeout(total=2)) as resp:  # Use ClientTimeout
+                    async with session.head(self.test_url, headers=headers, timeout=ClientTimeout(total=2)) as resp:
                         delay = (time.time() - start_time) * 1000
                         if not colo and 'cf-ray' in resp.headers:
                             cf_ray = resp.headers['cf-ray']
@@ -156,7 +154,7 @@ class CloudflareSpeedTest:
                 def __init__(self, target_ip):
                     self.target_ip = target_ip
 
-                async def resolve(self, host: str, port: int = 0, family: int = socket.AF_INET) ->  List[ResolveResult]:
+                async def resolve(self, host: str, port: int = 0, family: int = socket.AF_INET) -> List[ResolveResult]:
                     return [ResolveResult(
                         hostname=host,
                         host=self.target_ip,
@@ -363,21 +361,15 @@ class CloudflareSpeedTest:
             pass
 
 
-
-
-
-
-
+def parse_args():
     parser = argparse.ArgumentParser(description='CloudflareSpeedTest 参数配置')
     parser.add_argument('-f', '--ip-file', default='ip.txt', help='IP列表文件路径 (默认: ip.txt)')
     parser.add_argument('--test-times', type=int, default=4, help='TCP/HTTP测试次数 (默认: 4)')
     parser.add_argument('--download-count', type=int, default=10, help='下载测速IP数量 (默认: 10)')
-    parser.add_argument('--timeout', type=int, default=10, help='下载测速超时时间(秒) (默认: 2)')
+    parser.add_argument('--timeout', type=int, default=10, help='下载测速超时时间(秒) (默认: 10)')
     parser.add_argument('--test-url', default='https://speed.cloudflare.com/__down?bytes=200000000', help='测速用的URL地址')
     parser.add_argument('--concurrency', type=int, default=50, help='并发连接数 (默认: 50)')
     return parser.parse_args()
-
-
 
 def main():
     args = parse_args()
@@ -395,10 +387,6 @@ def main():
         print(f'发生未知错误：{str(e)}')
     finally:
         loop.close()
-
-if __name__ == '__main__':
-    main()
-
 
 if __name__ == '__main__':
     main()
