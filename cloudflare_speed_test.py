@@ -335,7 +335,7 @@ class CloudflareSpeedTest:
                 return
                 
             try:
-                save_path = os.path.abspath('result_hosts.txt')
+                save_path = os.path.abspath('result_hosts.csv')
                 print(f'准备保存{len(results)}条结果到：{save_path}')
                 
                 with open(save_path, 'w', newline='') as f:
@@ -350,7 +350,7 @@ class CloudflareSpeedTest:
                             result.location,
                             result.colo
                         ])
-                print('结果已保存到 result_hosts.txt')
+                print('结果已保存到 result_hosts.csv')
             except IOError as e:
                 print(f'文件写入失败：{str(e)}')
                 print(f'当前工作目录：{os.getcwd()}')
